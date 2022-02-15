@@ -30,4 +30,4 @@ class BotJose(Bot):
         return "José diz: Que bom que você me escolheu! Espero que eu possa te ajudar"
 
     def despedida(self):
-        return "José diz: Vamos esquecer os erros do passado, meu amigo, e focar nos erros do futuro. Adeus, até vista"
+        return(self.__comandos[-1].get_resposta_random())
