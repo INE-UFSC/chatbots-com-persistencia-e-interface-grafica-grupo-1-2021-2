@@ -1,15 +1,17 @@
 from Bots.Bot import Bot
+from Bots.BotDAO import BotDAO
 
 class SistemaChatBot:
     def __init__(self,nomeEmpresa,lista_bots):
         self.__empresa=nomeEmpresa
         ##verificar se a lista de bots contém apenas bots
-        self.__lista_bots = []
+        self.bot_dao = BotDAO()
         for bot in lista_bots:
             if isinstance(bot,Bot):
-                self.__lista_bots.append(bot)
+                self.bot_dao.add(bot.nome, bot)
             else:
                 raise ValueError('Um dos bots inseridos nao pertence a classe Bot')
+        
         self.__bot = None
     
     def boas_vindas(self):
@@ -17,7 +19,7 @@ class SistemaChatBot:
 
     def mostra_menu(self):
         print('Bots disponíveis:')
-        for i,bot in enumerate(self.lista_bots):
+        for i,bot in enumerate(self.bot_dao.getAll()):
             print(f'{i+1} - {bot.nome} - Apresentação: {bot.apresentacao()}')
 
     
