@@ -1,5 +1,7 @@
 from Bots.Bot import Bot
 from Bots.BotDAO import BotDAO
+from .SistemaView import SistemaView
+import PySimpleGUI as sg
 
 class SistemaChatBot:
     def __init__(self,nomeEmpresa,lista_bots):
@@ -9,9 +11,11 @@ class SistemaChatBot:
         for bot in lista_bots:
             if isinstance(bot,Bot):
                 self.bot_dao.add(bot.nome, bot)
+                self.bot_dao.remove(None)
+                print(self.bot_dao.getAll())
             else:
                 raise ValueError('Um dos bots inseridos nao pertence a classe Bot')
-        
+        self.__tela = SistemaView()
         self.__bot = None
     
     def boas_vindas(self):
@@ -63,17 +67,26 @@ class SistemaChatBot:
                 print('Insira um índice de um bot que exista')
 
     def inicio(self):
-        self.boas_vindas() #mostra a tela de boas vindas
+        self.__tela.tela_chat(self.bot_dao.getAll().values()) #mostra a tela de boas vindas
         while True:
-            self.mostra_menu() #mostra o menu com os bots disponiveis
-            if not self.escolhe_bot(): #o usuario escolhe um bot da lista de bots
+            event, values = self.__tela.le_eventos()
+            if event == sg.WIN_CLOSED:
                 break
-            print(self.__bot.boas_vindas()) #imprime a mensagem de boas vindas do bot
-            while True: #entra no loop de mostrar comandos do bot e escolher comando do bot até o usuário definir a saída
-                self.mostra_comandos_bot()
-                if not self.le_envia_comando():
-                    print(self.bot.despedida()) #ao sair mostra a mensagem de despedida do bot
+            for k in self.bot_dao.getAll().keys():
+                if event == k:
+                    self.__bot = self.bot_dao.get(k)
+                    self.__tela.tela_bot(self.__bot)
                     break
+            if self.__bot != None:
+                for cmd in self.__bot.comandos:
+                    if event == cmd.mensagem:
+                        self.__tela.mostra_mensagem(self.__bot.executa_comando_mensagem(event))
+
+        
+
+        self.__tela.fim()
+
+            
     
     @property
     def empresa(self): return(self.__empresa)

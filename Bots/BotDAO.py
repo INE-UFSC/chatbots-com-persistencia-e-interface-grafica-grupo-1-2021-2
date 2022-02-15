@@ -1,4 +1,4 @@
-from DAO import DAO
+from .DAO import DAO
 
 class BotDAO(DAO):
     def __init__(self):

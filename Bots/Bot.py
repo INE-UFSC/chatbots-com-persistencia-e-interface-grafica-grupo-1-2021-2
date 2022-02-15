@@ -13,11 +13,11 @@ class Bot(ABC):
 
     @property
     def nome(self):
-        pass
+        return self.__nome
 
     @nome.setter
-    def nome(nome):
-        pass
+    def nome(self, nome):
+        self.__nome = nome
 
     @property
     def comandos(self):
